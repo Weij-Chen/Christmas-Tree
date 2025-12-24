@@ -6,390 +6,365 @@
     <title>Interactive Christmas Tree</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "three": "https://esm.sh/three@0.158.0",
+        "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.11",
+        "@react-three/drei": "https://esm.sh/@react-three/drei@9.88.13",
+        "framer-motion": "https://esm.sh/framer-motion@10.16.4"
+      }
+    }
+    </script>
     <style>
         body { 
             margin: 0; 
             padding: 0; 
-            background: linear-gradient(135deg, #001a0f 0%, #000000 100%); 
+            background: #010b07; 
             overflow: hidden; 
             font-family: 'Cinzel', serif;
         }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         
-        .tree-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .tree {
-            position: relative;
-            width: 300px;
-            height: 400px;
-            transform-style: preserve-3d;
-            animation: treeFloat 6s ease-in-out infinite;
-        }
-        
-        @keyframes treeFloat {
-            0%, 100% { transform: translateY(0px) rotateY(0deg); }
-            50% { transform: translateY(-10px) rotateY(5deg); }
-        }
-        
-        .tree-layer {
-            position: absolute;
+        .loading {
+            position: fixed;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #0b6e40, #002816);
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(11, 110, 64, 0.5);
-        }
-        
-        .layer1 { width: 80px; height: 80px; top: 50px; }
-        .layer2 { width: 120px; height: 100px; top: 100px; }
-        .layer3 { width: 160px; height: 120px; top: 160px; }
-        .layer4 { width: 200px; height: 140px; top: 230px; }
-        
-        .trunk {
-            position: absolute;
-            left: 50%;
-            bottom: 20px;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 60px;
-            background: linear-gradient(135deg, #8B4513, #654321);
-            border-radius: 5px;
-        }
-        
-        .star {
-            position: absolute;
-            left: 50%;
-            top: 20px;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: #FFD700;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            box-shadow: 0 0 30px #FFD700;
-            animation: starTwinkle 2s ease-in-out infinite;
-        }
-        
-        @keyframes starTwinkle {
-            0%, 100% { transform: translateX(-50%) scale(1) rotate(0deg); }
-            50% { transform: translateX(-50%) scale(1.2) rotate(180deg); }
-        }
-        
-        .ornament {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            animation: ornamentGlow 3s ease-in-out infinite;
-        }
-        
-        @keyframes ornamentGlow {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 10px currentColor; }
-            50% { transform: scale(1.3); box-shadow: 0 0 20px currentColor; }
-        }
-        
-        .red { background: #8a1c1c; color: #8a1c1c; }
-        .gold { background: #FFD700; color: #FFD700; }
-        .green { background: #0b6e40; color: #0b6e40; }
-        
-        .lights {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #FFF6B5;
-            box-shadow: 0 0 15px #FFF6B5;
-            animation: lightBlink 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes lightBlink {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; transform: scale(1.5); }
-        }
-        
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2rem;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        .title {
-            text-align: center;
-            margin-top: 2rem;
-        }
-        
-        .main-title {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #FFF6B5, #C5A059);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
-            letter-spacing: 0.2em;
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            color: #0b6e40;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.5rem;
-            opacity: 0.8;
-        }
-        
-        .controls {
-            margin-bottom: 3rem;
-            pointer-events: auto;
-        }
-        
-        .toggle-btn {
-            padding: 1rem 2rem;
-            background: rgba(0, 40, 22, 0.2);
-            border: 2px solid #C5A059;
+            transform: translate(-50%, -50%);
             color: #FFD700;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            letter-spacing: 0.2em;
-            cursor: pointer;
-            transition: all 0.5s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
+            font-size: 1.5rem;
+            z-index: 1000;
         }
         
-        .toggle-btn:hover {
-            background: rgba(197, 160, 89, 0.1);
-            box-shadow: 0 0 20px rgba(197, 160, 89, 0.3);
-            transform: scale(1.05);
-        }
-        
-        .toggle-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #FFD700;
-            border-radius: 50%;
-            animation: particleFloat 8s linear infinite;
-        }
-        
-        @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        .scattered {
-            animation: scatter 2s ease-out forwards;
-        }
-        
-        @keyframes scatter {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.5) rotate(180deg); }
-            100% { transform: scale(0.3) rotate(360deg); opacity: 0.3; }
-        }
-        
-        .assembled {
-            animation: assemble 2s ease-out forwards;
-        }
-        
-        @keyframes assemble {
-            0% { transform: scale(0.3) rotate(360deg); opacity: 0.3; }
-            50% { transform: scale(1.5) rotate(180deg); }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        
-        .footer-text {
-            position: absolute;
-            bottom: 1rem;
-            left: 1rem;
-            color: #0b6e40;
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            opacity: 0.5;
+        .error {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 1000;
+            max-width: 80%;
         }
     </style>
 </head>
 <body>
-    <div class="tree-container">
-        <!-- Background Particles -->
-        <div class="particles" id="particles"></div>
-        
-        <!-- Main Tree -->
-        <div class="tree" id="tree">
-            <div class="star"></div>
-            <div class="tree-layer layer1"></div>
-            <div class="tree-layer layer2"></div>
-            <div class="tree-layer layer3"></div>
-            <div class="tree-layer layer4"></div>
-            <div class="trunk"></div>
-            
-            <!-- Ornaments -->
-            <div class="ornament red" style="top: 80px; left: 120px;"></div>
-            <div class="ornament gold" style="top: 90px; left: 180px;"></div>
-            <div class="ornament green" style="top: 130px; left: 100px;"></div>
-            <div class="ornament red" style="top: 140px; left: 200px;"></div>
-            <div class="ornament gold" style="top: 180px; left: 80px;"></div>
-            <div class="ornament green" style="top: 190px; left: 220px;"></div>
-            <div class="ornament red" style="top: 230px; left: 60px;"></div>
-            <div class="ornament gold" style="top: 240px; left: 240px;"></div>
-            <div class="ornament green" style="top: 280px; left: 100px;"></div>
-            <div class="ornament red" style="top: 290px; left: 200px;"></div>
-            
-            <!-- Lights -->
-            <div class="lights" style="top: 70px; left: 140px; animation-delay: 0s;"></div>
-            <div class="lights" style="top: 85px; left: 160px; animation-delay: 0.3s;"></div>
-            <div class="lights" style="top: 120px; left: 120px; animation-delay: 0.6s;"></div>
-            <div class="lights" style="top: 135px; left: 180px; animation-delay: 0.9s;"></div>
-            <div class="lights" style="top: 170px; left: 100px; animation-delay: 1.2s;"></div>
-            <div class="lights" style="top: 185px; left: 200px; animation-delay: 1.5s;"></div>
-            <div class="lights" style="top: 220px; left: 80px; animation-delay: 1.8s;"></div>
-            <div class="lights" style="top: 235px; left: 220px; animation-delay: 2.1s;"></div>
-            <div class="lights" style="top: 270px; left: 120px; animation-delay: 2.4s;"></div>
-            <div class="lights" style="top: 285px; left: 180px; animation-delay: 2.7s;"></div>
-        </div>
-        
-        <!-- UI Overlay -->
-        <div class="overlay">
-            <div class="title">
-                <h1 class="main-title">CHRISTMAS TREE</h1>
-                <h2 class="subtitle">Merry Christmas</h2>
-            </div>
-            
-            <div class="controls">
-                <button class="toggle-btn" id="toggleBtn">SCATTER ESSENCE</button>
-            </div>
-        </div>
-        
-        <div class="footer-text">INTERACTIVE 3D EXPERIENCE</div>
+    <div id="root">
+        <div class="loading">🎄 Loading Christmas Magic... 🎄</div>
     </div>
 
-    <script>
-        // State management
-        let isScattered = false;
-        const tree = document.getElementById('tree');
-        const toggleBtn = document.getElementById('toggleBtn');
-        const particles = document.getElementById('particles');
-        
-        // Create floating particles
-        function createParticles() {
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 8 + 's';
-                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
-                particles.appendChild(particle);
-            }
-        }
-        
-        // Toggle tree state
-        function toggleTreeState() {
-            isScattered = !isScattered;
-            
-            if (isScattered) {
-                tree.classList.remove('assembled');
-                tree.classList.add('scattered');
-                toggleBtn.textContent = 'ASSEMBLE FORM';
-                
-                // Add chaotic movement to ornaments and lights
-                const ornaments = document.querySelectorAll('.ornament, .lights');
-                ornaments.forEach((ornament, index) => {
-                    const randomX = (Math.random() - 0.5) * 400;
-                    const randomY = (Math.random() - 0.5) * 400;
-                    ornament.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${Math.random() * 360}deg)`;
-                    ornament.style.transition = 'transform 2s ease-out';
+    <script type="module">
+        try {
+            // Import React and other dependencies
+            const React = await import('react');
+            const { createRoot } = await import('react-dom/client');
+            const { Canvas, useFrame } = await import('@react-three/fiber');
+            const { OrbitControls, Environment, PerspectiveCamera, Stars } = await import('@react-three/drei');
+            const THREE = await import('three');
+            const { motion } = await import('framer-motion');
+
+            const { useState, useRef, useMemo } = React;
+
+            // Tree configuration
+            const FOLIAGE_COUNT = 8000;
+            const TREE_CONFIG = {
+                height: 12,
+                radiusBase: 4.5,
+                scatterRadius: 18,
+            };
+
+            // Tree states
+            const TreeMorphState = {
+                SCATTERED: 'SCATTERED',
+                TREE_SHAPE: 'TREE_SHAPE',
+            };
+
+            // Simple particle system component
+            const FoliagePoints = ({ morphTarget }) => {
+                const pointsRef = useRef();
+                const materialRef = useRef();
+
+                const { positions, colors, sizes } = useMemo(() => {
+                    const positions = new Float32Array(FOLIAGE_COUNT * 3);
+                    const colors = new Float32Array(FOLIAGE_COUNT * 3);
+                    const sizes = new Float32Array(FOLIAGE_COUNT);
+
+                    for (let i = 0; i < FOLIAGE_COUNT; i++) {
+                        const i3 = i * 3;
+                        
+                        // Random positions
+                        positions[i3] = (Math.random() - 0.5) * 20;
+                        positions[i3 + 1] = (Math.random() - 0.5) * 20;
+                        positions[i3 + 2] = (Math.random() - 0.5) * 20;
+                        
+                        // Green colors with variation
+                        colors[i3] = 0.1 + Math.random() * 0.3; // R
+                        colors[i3 + 1] = 0.4 + Math.random() * 0.4; // G
+                        colors[i3 + 2] = 0.1 + Math.random() * 0.2; // B
+                        
+                        sizes[i] = Math.random() * 3 + 1;
+                    }
+
+                    return { positions, colors, sizes };
+                }, []);
+
+                useFrame((state) => {
+                    if (pointsRef.current && materialRef.current) {
+                        const time = state.clock.elapsedTime;
+                        
+                        // Update positions based on morph target
+                        const positionArray = pointsRef.current.geometry.attributes.position.array;
+                        
+                        for (let i = 0; i < FOLIAGE_COUNT; i++) {
+                            const i3 = i * 3;
+                            
+                            // Tree shape calculation
+                            const y = (Math.random() - 0.2) * TREE_CONFIG.height;
+                            const normY = 1 - (y + TREE_CONFIG.height * 0.2) / TREE_CONFIG.height;
+                            const radiusAtHeight = Math.max(0, normY * TREE_CONFIG.radiusBase);
+                            const angle = Math.random() * Math.PI * 2;
+                            const r = Math.sqrt(Math.random()) * radiusAtHeight;
+                            
+                            const treeX = Math.cos(angle) * r;
+                            const treeY = y;
+                            const treeZ = Math.sin(angle) * r;
+                            
+                            // Scatter positions
+                            const scatterX = (Math.random() - 0.5) * TREE_CONFIG.scatterRadius * 2;
+                            const scatterY = (Math.random() - 0.5) * TREE_CONFIG.scatterRadius * 2;
+                            const scatterZ = (Math.random() - 0.5) * TREE_CONFIG.scatterRadius * 2;
+                            
+                            // Interpolate between scatter and tree positions
+                            positionArray[i3] = scatterX + (treeX - scatterX) * morphTarget + Math.sin(time + i) * 0.1;
+                            positionArray[i3 + 1] = scatterY + (treeY - scatterY) * morphTarget + Math.cos(time + i) * 0.1;
+                            positionArray[i3 + 2] = scatterZ + (treeZ - scatterZ) * morphTarget;
+                        }
+                        
+                        pointsRef.current.geometry.attributes.position.needsUpdate = true;
+                        
+                        // Update material opacity
+                        materialRef.current.opacity = 0.6 + 0.4 * morphTarget;
+                    }
                 });
-                
-            } else {
-                tree.classList.remove('scattered');
-                tree.classList.add('assembled');
-                toggleBtn.textContent = 'SCATTER ESSENCE';
-                
-                // Return ornaments and lights to original positions
-                const ornaments = document.querySelectorAll('.ornament, .lights');
-                ornaments.forEach(ornament => {
-                    ornament.style.transform = '';
-                    ornament.style.transition = 'transform 2s ease-out';
+
+                return React.createElement('points', { ref: pointsRef }, [
+                    React.createElement('bufferGeometry', { key: 'geometry' }, [
+                        React.createElement('bufferAttribute', {
+                            key: 'position',
+                            attach: 'attributes-position',
+                            count: FOLIAGE_COUNT,
+                            array: positions,
+                            itemSize: 3
+                        }),
+                        React.createElement('bufferAttribute', {
+                            key: 'color',
+                            attach: 'attributes-color',
+                            count: FOLIAGE_COUNT,
+                            array: colors,
+                            itemSize: 3
+                        }),
+                        React.createElement('bufferAttribute', {
+                            key: 'size',
+                            attach: 'attributes-size',
+                            count: FOLIAGE_COUNT,
+                            array: sizes,
+                            itemSize: 1
+                        })
+                    ]),
+                    React.createElement('pointsMaterial', {
+                        key: 'material',
+                        ref: materialRef,
+                        size: 0.1,
+                        vertexColors: true,
+                        transparent: true,
+                        opacity: 0.8,
+                        sizeAttenuation: true
+                    })
+                ]);
+            };
+
+            // Simple star component
+            const TopStar = ({ morphTarget }) => {
+                const starRef = useRef();
+
+                useFrame((state) => {
+                    if (starRef.current) {
+                        const time = state.clock.elapsedTime;
+                        starRef.current.rotation.y = time;
+                        starRef.current.position.y = 6 + Math.sin(time * 2) * 0.2;
+                        starRef.current.scale.setScalar(1 + Math.sin(time * 3) * 0.1);
+                        
+                        // Move between scatter and tree position
+                        const scatterPos = [(Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20];
+                        const treePos = [0, 6, 0];
+                        
+                        starRef.current.position.x = scatterPos[0] + (treePos[0] - scatterPos[0]) * morphTarget;
+                        starRef.current.position.z = scatterPos[2] + (treePos[2] - scatterPos[2]) * morphTarget;
+                    }
                 });
-            }
+
+                return React.createElement('mesh', { ref: starRef }, [
+                    React.createElement('coneGeometry', { key: 'geometry', args: [0.5, 1, 5] }),
+                    React.createElement('meshStandardMaterial', {
+                        key: 'material',
+                        color: '#FFD700',
+                        emissive: '#FFD700',
+                        emissiveIntensity: 0.5
+                    })
+                ]);
+            };
+
+            // 3D Experience component
+            const Experience = ({ treeState }) => {
+                const morphTarget = treeState === TreeMorphState.TREE_SHAPE ? 1.0 : 0.0;
+
+                return React.createElement(Canvas, {
+                    gl: { antialias: true, alpha: false },
+                    dpr: [1, 2],
+                    shadows: true
+                }, [
+                    React.createElement('color', { key: 'bg', attach: 'background', args: ['#000502'] }),
+                    React.createElement(PerspectiveCamera, {
+                        key: 'camera',
+                        makeDefault: true,
+                        position: [0, 2, 18],
+                        fov: 45
+                    }),
+                    React.createElement(OrbitControls, {
+                        key: 'controls',
+                        enablePan: false,
+                        minDistance: 8,
+                        maxDistance: 25,
+                        maxPolarAngle: Math.PI / 1.4,
+                        autoRotate: treeState === TreeMorphState.TREE_SHAPE,
+                        autoRotateSpeed: 0.5
+                    }),
+                    React.createElement(Environment, { key: 'env', preset: 'city' }),
+                    React.createElement('ambientLight', { key: 'ambient', intensity: 0.2, color: '#001a0f' }),
+                    React.createElement('spotLight', {
+                        key: 'spot',
+                        position: [10, 20, 10],
+                        angle: 0.3,
+                        penumbra: 1,
+                        intensity: 2,
+                        color: '#fff0d6',
+                        castShadow: true
+                    }),
+                    React.createElement('pointLight', {
+                        key: 'point',
+                        position: [-10, -5, -10],
+                        intensity: 1,
+                        color: '#0b6e40'
+                    }),
+                    React.createElement('group', { key: 'scene', position: [0, -4, 0] }, [
+                        React.createElement(FoliagePoints, { key: 'foliage', morphTarget }),
+                        React.createElement(TopStar, { key: 'star', morphTarget })
+                    ]),
+                    React.createElement(Stars, {
+                        key: 'stars',
+                        radius: 100,
+                        depth: 50,
+                        count: 5000,
+                        factor: 4,
+                        saturation: 0,
+                        fade: true,
+                        speed: 1
+                    })
+                ]);
+            };
+
+            // Overlay component
+            const Overlay = ({ treeState, toggleState }) => {
+                const isTree = treeState === TreeMorphState.TREE_SHAPE;
+
+                return React.createElement('div', {
+                    className: 'absolute inset-0 pointer-events-none flex flex-col justify-between items-center p-8 z-10'
+                }, [
+                    React.createElement('header', { key: 'header', className: 'text-center mt-4' }, [
+                        React.createElement('h1', {
+                            key: 'title',
+                            className: 'text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-600 font-bold tracking-widest drop-shadow-lg uppercase',
+                            style: { fontFamily: 'Cinzel, serif' }
+                        }, 'Christmas Tree'),
+                        React.createElement('h2', {
+                            key: 'subtitle',
+                            className: 'text-green-400 italic text-xl md:text-2xl mt-2 tracking-wide opacity-80',
+                            style: { fontFamily: 'Playfair Display, serif' }
+                        }, 'Merry Christmas')
+                    ]),
+                    React.createElement('div', {
+                        key: 'controls',
+                        className: 'mb-12 pointer-events-auto'
+                    }, [
+                        React.createElement('button', {
+                            key: 'button',
+                            onClick: toggleState,
+                            className: `px-8 py-3 text-sm md:text-lg tracking-widest font-bold border border-yellow-500 transition-all duration-500 backdrop-blur-sm ${isTree ? 'bg-green-900 bg-opacity-20 text-yellow-400' : 'bg-transparent text-yellow-400'} hover:bg-yellow-500 hover:text-black`,
+                            style: { fontFamily: 'Cinzel, serif' }
+                        }, isTree ? 'SCATTER ESSENCE' : 'ASSEMBLE FORM')
+                    ]),
+                    React.createElement('div', {
+                        key: 'footer',
+                        className: 'absolute bottom-4 left-4 text-green-400 text-xs tracking-widest opacity-50',
+                        style: { fontFamily: 'Cinzel, serif' }
+                    }, 'INTERACTIVE 3D EXPERIENCE')
+                ]);
+            };
+
+            // Main App component
+            const App = () => {
+                const [treeState, setTreeState] = useState(TreeMorphState.SCATTERED);
+
+                const toggleState = () => {
+                    setTreeState(prev => 
+                        prev === TreeMorphState.SCATTERED 
+                            ? TreeMorphState.TREE_SHAPE 
+                            : TreeMorphState.SCATTERED
+                    );
+                };
+
+                return React.createElement('div', {
+                    className: 'w-full h-screen bg-black relative overflow-hidden'
+                }, [
+                    React.createElement('div', {
+                        key: 'canvas',
+                        className: 'absolute inset-0 z-0'
+                    }, [
+                        React.createElement(Experience, { treeState })
+                    ]),
+                    React.createElement(Overlay, {
+                        key: 'overlay',
+                        treeState,
+                        toggleState
+                    }),
+                    React.createElement('div', {
+                        key: 'border',
+                        className: 'absolute inset-0 pointer-events-none border border-yellow-500 border-opacity-20 m-4 z-20'
+                    })
+                ]);
+            };
+
+            // Render the app
+            const root = createRoot(document.getElementById('root'));
+            root.render(React.createElement(App));
+
+            console.log('🎄 Christmas Tree loaded successfully! 🎄');
+
+        } catch (error) {
+            console.error('Error loading Christmas Tree:', error);
+            document.getElementById('root').innerHTML = `
+                <div class="error">
+                    <h2>🎄 Oops! Something went wrong 🎄</h2>
+                    <p>Error: ${error.message}</p>
+                    <p>Please try refreshing the page or check your internet connection.</p>
+                    <br>
+                    <p><strong>Alternative:</strong> Try opening <code>christmas-tree-standalone.html</code> instead.</p>
+                </div>
+            `;
         }
-        
-        // Event listeners
-        toggleBtn.addEventListener('click', toggleTreeState);
-        
-        // Initialize
-        createParticles();
-        
-        // Add some interactive hover effects
-        tree.addEventListener('mouseenter', () => {
-            tree.style.transform = 'scale(1.05)';
-            tree.style.transition = 'transform 0.3s ease';
-        });
-        
-        tree.addEventListener('mouseleave', () => {
-            tree.style.transform = 'scale(1)';
-        });
-        
-        // Add keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                toggleTreeState();
-            }
-        });
-        
-        // Add some random twinkling to ornaments
-        setInterval(() => {
-            const ornaments = document.querySelectorAll('.ornament');
-            const randomOrnament = ornaments[Math.floor(Math.random() * ornaments.length)];
-            randomOrnament.style.animation = 'none';
-            setTimeout(() => {
-                randomOrnament.style.animation = 'ornamentGlow 3s ease-in-out infinite';
-            }, 100);
-        }, 2000);
-        
-        // Console message
-        console.log('🎄 Merry Christmas! Press SPACE or click the button to toggle the tree state! 🎄');
     </script>
 </body>
 </html>
